@@ -30,17 +30,17 @@ spec:
           valueFrom: 
             secretKeyRef:
               name: go-pub-postgres
-              key: db_name
+              key: database
         - name: POSTGRES_USER
           valueFrom: 
             secretKeyRef:
               name: go-pub-postgres
-              key: db_user
+              key: user
         - name: POSTGRES_PASSWORD
           valueFrom: 
             secretKeyRef:
               name: go-pub-postgres
-              key: db_password
+              key: password
         volumeMounts:
         - name: go-pub-postgres-data-volume
           mountPath: "/var/lib/postgresql/data/"
