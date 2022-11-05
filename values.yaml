@@ -6,12 +6,12 @@
 serverName: "localhost"
 
 auth:
-  endpoint: "http://go-auth/auth/"
+  endpoint: http://go-auth/auth/
   hcaptcha: ""
   register: "true"
 
 client:
-  endpoint: "http://go-pub-client"
+  endpoint: http://go-pub-client
 
 postgres:
   external:
