@@ -13,6 +13,6 @@ postgres:
   external:
     enabled: false
     host: "localhost"
-  database: "activitypub"
-  user: "activitypub"
+  database: "auth"
+  user: "auth"
   password: "password"
