@@ -13,6 +13,6 @@ postgres:
 auth:
   jwtSecret: "secret"
 
-config:
+config: # TODO: Incorporate these into the chart
   hcaptcha: ""
   register: "true"

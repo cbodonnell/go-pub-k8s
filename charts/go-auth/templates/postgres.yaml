@@ -1,6 +1,6 @@
 {{ if .Values.useInternalPostgres }}
 apiVersion: apps/v1
-kind: StatefulSet # TODO: Make this a StatefulSet
+kind: StatefulSet
 metadata:
   name: go-auth-postgres
   labels:
@@ -23,9 +23,6 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "100m"
-          # limits:
-          #   memory: "128Mi"
-          #   cpu: "250m"
         ports:
         - containerPort: 5432
         env:
@@ -53,9 +50,6 @@ spec:
         - name: go-auth-postgres-initdb-volume
           configMap:
             name: go-auth-postgres-initdb
-        # - name: go-auth-postgres-data-volume
-        #   persistentVolumeClaim:
-        #     claimName: go-auth-postgres-data
   volumeClaimTemplates:
   - metadata:
       name: go-auth-postgres-data-volume
@@ -64,23 +58,10 @@ spec:
       resources:
         requests:
           storage: 1Gi
-# ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: go-auth-postgres-data
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 500Mi
-#   selector:
-#     matchLabels:
-#       app: go-auth-postgres
 ---
 apiVersion: v1
 data:
+  # TODO: Get this from values.yaml or somewhere more maintainable
   init_db.sql: "-- Initialization Script\n\n\n-- public.users definition\nDO $$\nBEGIN\n\tCREATE
     TABLE IF NOT EXISTS public.users (\n\t\tid serial NOT NULL,\n\t\tusername varchar
     NOT NULL,\n\t\t\"password\" varchar NOT NULL,\n\t\tcreated timestamptz NOT NULL,\n\t\tuuid

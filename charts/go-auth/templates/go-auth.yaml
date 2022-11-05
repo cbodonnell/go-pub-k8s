@@ -42,9 +42,6 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "100m"
-          # limits:
-          #   memory: "128Mi"
-          #   cpu: "250m"
         ports:
         - containerPort: 80
         env:
