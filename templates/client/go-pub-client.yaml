@@ -24,8 +24,8 @@ spec:
     metadata:
       labels:
         app: go-pub-client
-      annotations:
-        configSha: {{ include (print $.Template.BasePath "/client/config.yaml") . | sha256sum }}
+      # annotations:
+      #   configSha: {{ include (print $.Template.BasePath "/client/config.yaml") . | sha256sum }}
     spec:
       containers:
       - name: go-pub-client

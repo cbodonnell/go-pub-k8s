@@ -59,8 +59,8 @@ spec:
     metadata:
       labels:
         app: go-pub
-      annotations:
-        configSha: {{ include (print $.Template.BasePath "/backend/config.yaml") . | sha256sum }}
+      # annotations:
+      #   configSha: {{ include (print $.Template.BasePath "/backend/config.yaml") . | sha256sum }}
     spec:
       containers:
       - name: go-pub
