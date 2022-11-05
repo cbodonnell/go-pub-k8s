@@ -5,5 +5,30 @@
 # TODO: make this more elegant (80/443 -> http/https)
 serverName: "localhost"
 
-authHcaptcha: ""
-authRegister: "true"
+auth:
+  endpoint: "http://go-auth/auth/"
+  hcaptcha: ""
+  register: "true"
+
+client:
+  endpoint: "http://go-pub-client"
+
+postgres:
+  external:
+    enabled: false
+    host: "localhost"
+  database: "activitypub"
+  user: "activitypub"
+  password: "password"
+
+redis:
+  external:
+    enabled: false
+    host: "localhost"
+  password: "password"
+
+rsa:
+  publicKey: |
+    public key
+  privateKey: |
+    private key

@@ -1,10 +1,12 @@
+{{ if not .Values.postgres.external.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: go-pub-postgres
   labels:
     app: go-pub-postgres
 spec:
+  serviceName: go-pub-postgres
   replicas: 1
   selector:
     matchLabels:
@@ -18,9 +20,9 @@ spec:
       - name: go-pub-postgres
         image: postgres:latest
         resources: # TODO: Determine eventually
-          limits:
+          requests:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "100m"
         ports:
         - containerPort: 5432
         env:
@@ -48,52 +50,43 @@ spec:
         - name: go-pub-postgres-initdb-volume
           configMap:
             name: go-pub-postgres-initdb
-        - name: go-pub-postgres-data-volume
-          persistentVolumeClaim:
-            claimName: go-pub-postgres-data
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: go-pub-postgres-data
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 500Mi
-  selector:
-    matchLabels:
-      app: go-pub-postgres
+  volumeClaimTemplates:
+  - metadata:
+      name: go-pub-postgres-data-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
 ---
 apiVersion: v1
 data:
-  init_db.sql: "-- Initialization Script\n\n-- Create tables\n\n-- public.users definition\n\nDO
-    $$\nBEGIN\n\n\tCREATE TABLE IF NOT EXISTS public.users (\n\t\tid serial NOT NULL,\n\t\t\"name\"
-    text NOT NULL,\n\t\tdiscoverable bool NOT NULL,\n\t\tiri text NOT NULL,\n\t\tCONSTRAINT
-    users_pkey PRIMARY KEY (id)\n\t);\n\n\t-- public.objects definition\n\n\tCREATE
-    TABLE IF NOT EXISTS public.objects (\n\t\tid serial NOT NULL,\n\t\t\"type\" text
-    NULL,\n\t\tiri text NULL,\n\t\t\"content\" text NULL,\n\t\tattributed_to text
-    NULL,\n\t\tin_reply_to text NULL,\n\t\t\"name\" text NULL,\n\t\tCONSTRAINT objects_pkey
-    PRIMARY KEY (id)\n\t);\n\n\t-- public.object_files definition\n\n\tCREATE TABLE
-    IF NOT EXISTS public.object_files (\n\t\tid serial NOT NULL,\n\t\tobject_id int4
-    NOT NULL,\n\t\tcreated timestamptz NOT NULL,\n\t\t\"name\" text NOT NULL,\n\t\tuuid
-    text NOT NULL,\n\t\t\"type\" text NOT NULL,\n\t\thref text NOT NULL,\n\t\tmedia_type
-    text NOT NULL,\n\t\tCONSTRAINT object_files_pkey PRIMARY KEY (id)\n\t);\n\n\tALTER
-    TABLE public.object_files DROP CONSTRAINT IF EXISTS object_files_object_id_fk;\n\tALTER
-    TABLE public.object_files ADD CONSTRAINT object_files_object_id_fk FOREIGN KEY
-    (object_id) REFERENCES public.objects(id);\n\n\t-- public.activities definition\n\n\tCREATE
-    TABLE IF NOT EXISTS public.activities (\n\t\tid serial NOT NULL,\n\t\t\"type\"
-    text NOT NULL,\n\t\tactor text NOT NULL,\n\t\tobject_id int4 NOT NULL,\n\t\tiri
-    text NULL,\n\t\tCONSTRAINT outbox_activities_pkey PRIMARY KEY (id)\n\t);\n\n\tALTER
-    TABLE public.activities DROP CONSTRAINT IF EXISTS activities_object_id_fk;\n\tALTER
-    TABLE public.activities ADD CONSTRAINT activities_object_id_fk FOREIGN KEY (object_id)
-    REFERENCES public.objects(id);\n\n\t-- public.activities_to definition\n\n\tCREATE
-    TABLE IF NOT EXISTS public.activities_to (\n\t\tid serial NOT NULL,\n\t\tactivity_id
-    int4 NOT NULL,\n\t\tiri text NOT NULL,\n\t\tCONSTRAINT outbox_to_pkey PRIMARY
-    KEY (id)\n\t);\n\n\tALTER TABLE public.activities_to DROP CONSTRAINT IF EXISTS
-    activities_to_activity_id_fk;\n\tALTER TABLE public.activities_to ADD CONSTRAINT
-    activities_to_activity_id_fk FOREIGN KEY (activity_id) REFERENCES public.activities(id);\n\nEND\n$$\n\n"
+  # TODO: Get this from values.yaml or somewhere more maintainable
+  init_db.sql: "-- Initialization Script\n\n\n-- public.users definition\nDO $$\nBEGIN\n\tCREATE
+    TABLE IF NOT EXISTS public.users (\n\t\tid serial NOT NULL,\n\t\tusername varchar
+    NOT NULL,\n\t\t\"password\" varchar NOT NULL,\n\t\tcreated timestamptz NOT NULL,\n\t\tuuid
+    text NOT NULL,\n\t\tCONSTRAINT users_pkey PRIMARY KEY (id)\n\t);\n\n\n\t-- public.\"groups\"
+    definition\n\n\tCREATE TABLE IF NOT EXISTS public.\"groups\" (\n\t\tid serial
+    NOT NULL,\n\t\t\"name\" varchar NOT NULL,\n\t\tCONSTRAINT groups_pkey PRIMARY
+    KEY (id)\n\t);\n\n\tIF NOT EXISTS (SELECT * FROM public.groups) THEN\n\t\tINSERT
+    INTO public.\"groups\" (\"name\") VALUES ('public'), ('admin');\n\tEND IF;\n\n\n\t--
+    public.user_refresh definition\n\n\tCREATE TABLE IF NOT EXISTS public.user_refresh
+    (\n\t\tid serial NOT NULL,\n\t\tuser_id int4 NOT NULL,\n\t\t\"jti\" text NOT NULL,\n\t\texpires
+    timestamptz NOT NULL,\n\t\tCONSTRAINT user_refresh_pkey PRIMARY KEY (id)\n\t);\n\n\t--
+    public.user_refresh foreign keys\n\tALTER TABLE public.user_refresh DROP CONSTRAINT
+    IF EXISTS fki_user_refresh_user_id;\n\tALTER TABLE public.user_refresh ADD CONSTRAINT
+    fki_user_refresh_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);\n\n\n\t--
+    public.\"user_groups\" definition\n\n\tCREATE TABLE IF NOT EXISTS public.user_groups
+    (\n\t\tid serial NOT NULL,\n\t\tuser_id int4 NOT NULL,\n\t\tgroup_id int4 NOT
+    NULL,\n\t\tCONSTRAINT user_groups_pkey PRIMARY KEY (id)\n\t);\n\tCREATE INDEX
+    IF NOT EXISTS fki_user_groups_group_id ON public.user_groups USING btree (group_id);\n\tCREATE
+    INDEX IF NOT EXISTS fki_user_groups_user_id ON public.user_groups USING btree
+    (user_id);\n\n\t-- public.user_groups foreign keys\n\n\tALTER TABLE public.user_groups
+    DROP CONSTRAINT IF EXISTS user_groups_group_id;\n\tALTER TABLE public.user_groups
+    ADD CONSTRAINT user_groups_group_id FOREIGN KEY (group_id) REFERENCES public.\"groups\"(id);\n\tALTER
+    TABLE public.user_groups DROP CONSTRAINT IF EXISTS user_groups_user_id;\n\tALTER
+    TABLE public.user_groups ADD CONSTRAINT user_groups_user_id FOREIGN KEY (user_id)
+    REFERENCES public.users(id);\nEND\n$$\n\n\n"
 kind: ConfigMap
 metadata:
   name: go-pub-postgres-initdb
@@ -101,7 +94,7 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-pub-postgres-service
+  name: go-pub-postgres
 spec:
   selector:
     app: go-pub-postgres
@@ -110,3 +103,4 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
+{{ end }}

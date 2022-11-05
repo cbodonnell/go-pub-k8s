@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-pub-client-config
+data:
+  auth_url: '"http://{{ .Values.serverName }}/auth"' # TODO: conditional SSL?
+  auth_hcaptcha: '"{{ .Values.auth.hcaptcha }}"'
+  auth_register: '"{{ .Values.auth.register }}"'
+  activity_url: '"http://{{ .Values.serverName }}"' # TODO: conditional SSL?
+  proxy_url: '"http://{{ .Values.serverName }}/proxy"' # TODO: conditional SSL?
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,9 +31,9 @@ spec:
       - name: go-pub-client
         image: cheebz/go-pub-client
         resources: # TODO: Determine eventually
-          limits:
+          requests:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "100m"
         ports:
         - containerPort: 80
         env:
@@ -55,7 +66,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-pub-client-service
+  name: go-pub-client
 spec:
   selector:
     app: go-pub-client

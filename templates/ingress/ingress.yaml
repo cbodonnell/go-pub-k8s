@@ -11,21 +11,21 @@ spec:
       paths:
       - backend:
           service:
-            name: go-auth-service
+            name: go-auth
             port:
               number: 80 
         path: /(auth.*)
         pathType: Prefix
       - backend:
           service:
-            name: pancors-service
+            name: pancors
             port:
               number: 80 
         path: /proxy/(.*)
         pathType: Prefix
       - backend:
           service:
-            name: go-pub-service
+            name: go-pub
             port:
               number: 80 
         path: /(.*)

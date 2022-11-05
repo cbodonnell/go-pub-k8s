@@ -3,10 +3,10 @@ kind: Secret
 metadata:
   name: go-auth-postgres
 stringData:
-  {{- if .Values.useInternalPostgres }}
-  db_host: go-auth-postgres
-  {{- else }}
+  {{- if .Values.postgres.external.enabled }}
   db_host: {{ .Values.postgres.host }}
+  {{- else }}
+  db_host: go-auth-postgres
   {{- end }}
   db_name: {{ .Values.postgres.database }}
   db_user: {{ .Values.postgres.user }}
@@ -75,7 +75,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-auth-service
+  name: go-auth
 spec:
   selector:
     app: go-auth
