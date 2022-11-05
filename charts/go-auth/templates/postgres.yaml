@@ -1,10 +1,12 @@
+{{ if .Values.useInternalPostgres }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet # TODO: Make this a StatefulSet
 metadata:
   name: go-auth-postgres
   labels:
     app: go-auth-postgres
 spec:
+  serviceName: go-auth-postgres
   replicas: 1
   selector:
     matchLabels:
@@ -48,23 +50,31 @@ spec:
         - name: go-auth-postgres-initdb-volume
           configMap:
             name: go-auth-postgres-initdb
-        - name: go-auth-postgres-data-volume
-          persistentVolumeClaim:
-            claimName: go-auth-postgres-data
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: go-auth-postgres-data
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 500Mi
-  selector:
-    matchLabels:
-      app: go-auth-postgres
+        # - name: go-auth-postgres-data-volume
+        #   persistentVolumeClaim:
+        #     claimName: go-auth-postgres-data
+  volumeClaimTemplates:
+  - metadata:
+      name: go-auth-postgres-data-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: go-auth-postgres-data
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 500Mi
+#   selector:
+#     matchLabels:
+#       app: go-auth-postgres
 ---
 apiVersion: v1
 data:
@@ -100,7 +110,7 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-auth-postgres-service
+  name: go-auth-postgres
 spec:
   selector:
     app: go-auth-postgres
@@ -109,3 +119,4 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
+{{ end }}

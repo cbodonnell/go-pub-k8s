@@ -1,0 +1,18 @@
+# Default values for go-auth.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+useInternalPostgres: true
+
+postgres:
+  host: "localhost" # only used if useInternalPostgres is false
+  database: "auth"
+  user: "auth"
+  password: "password"
+
+auth:
+  jwtSecret: "secret"
+
+config:
+  hcaptcha: ""
+  register: "true"
