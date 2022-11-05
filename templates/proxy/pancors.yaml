@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: pancors-config
 data:
-  auth_endpoint: {{ .Values.auth.endpoint | quote }}
+  auth_endpoint: http://go-auth/auth/
 ---
 apiVersion: apps/v1
 kind: Deployment

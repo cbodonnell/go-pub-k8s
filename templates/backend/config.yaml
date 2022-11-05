@@ -4,8 +4,8 @@ metadata:
   name: go-pub-config
 data:
   server_name: {{ .Values.serverName }}
-  auth_endpoint: {{ .Values.auth.endpoint }}
-  client_endpoint: {{ .Values.client.endpoint }}
+  auth_endpoint: http://go-auth/auth/
+  client_endpoint: http://go-pub-client
   rsa_public_key: /etc/rsa/public.pem
   rsa_private_key: /etc/rsa/private.pem
   upload_dir: /app/uploads # TODO: Make this an s3 bucket
