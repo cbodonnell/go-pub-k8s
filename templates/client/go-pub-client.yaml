@@ -19,13 +19,13 @@ spec:
       containers:
       - name: go-pub-client
         image: cheebz/go-pub-client
-        resources: # TODO: Determine eventually
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
+        # resources: # TODO: Determine eventually
+        #   requests:
+        #     memory: "128Mi"
+        #     cpu: "100m"
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "100m"
         ports:
         - containerPort: 80
         env:
