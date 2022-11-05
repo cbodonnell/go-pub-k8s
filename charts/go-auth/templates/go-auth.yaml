@@ -39,9 +39,12 @@ spec:
       - name: go-auth
         image: cheebz/go-auth
         resources: # TODO: Determine eventually
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "250m"
         ports:
         - containerPort: 80
         env:
