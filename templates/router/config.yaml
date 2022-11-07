@@ -12,8 +12,8 @@ data:
         proxy_pass http://go-auth/auth/;
       }
 
-      location /proxy {
-        proxy_pass http://pancors;
+      location /proxy/ {
+        proxy_pass http://pancors/;
       }
 
       location / {
