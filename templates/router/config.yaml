@@ -1,0 +1,23 @@
+# configmap containing the nginx configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-pub-nginx-config
+data:
+  default.conf: |
+    server {
+      listen 80;
+      # server_name {{ .Values.serverName }};
+
+      location /auth/ {
+        proxy_pass http://go-pub-auth/auth/;
+      }
+
+      location /proxy {
+        proxy_pass http://go-pub-proxy;
+      }
+
+      location / {
+        proxy_pass http://go-pub-backend;
+      }
+    }
