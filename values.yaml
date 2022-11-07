@@ -12,6 +12,9 @@ auth:
 
 client:
   endpoint: http://go-pub-client
+  authUrl: http://localhost/auth
+  activityUrl: http://localhost
+  proxyUrl: http://localhost/proxy
 
 postgres:
   external:

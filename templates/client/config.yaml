@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: go-pub-client-config
 data:
-  auth_url: '"http://{{ .Values.serverName }}/auth"' # TODO: conditional SSL?
+  auth_url: '"{{ .Values.client.authUrl }}"'
   auth_hcaptcha: '"{{ .Values.auth.hcaptcha }}"'
   auth_register: '"{{ .Values.auth.register }}"'
-  activity_url: '"http://{{ .Values.serverName }}"' # TODO: conditional SSL?
-  proxy_url: '"http://{{ .Values.serverName }}/proxy"' # TODO: conditional SSL?
+  activity_url: '"{{ .Values.client.activityUrl }}"'
+  proxy_url: '"{{ .Values.client.proxyUrl }}"'
