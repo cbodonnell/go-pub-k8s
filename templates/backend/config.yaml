@@ -16,7 +16,7 @@ metadata:
   name: go-pub-postgres
 stringData:
   {{- if .Values.postgres.external.enabled }}
-  host: {{ .Values.postgres.host }}
+  host: {{ .Values.postgres.external.host }}
   {{- else }}
   host: go-pub-postgres
   {{- end }}

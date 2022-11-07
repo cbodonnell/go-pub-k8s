@@ -4,7 +4,7 @@ metadata:
   name: go-auth-postgres
 stringData:
   {{- if .Values.postgres.external.enabled }}
-  db_host: {{ .Values.postgres.host }}
+  db_host: {{ .Values.postgres.external.host }}
   {{- else }}
   db_host: go-auth-postgres
   {{- end }}
