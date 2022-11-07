@@ -4,6 +4,7 @@
 
 # TODO: make this more elegant (80/443 -> http/https)
 serverName: "localhost"
+protocol: "http"
 
 auth:
   endpoint: http://go-auth/auth/

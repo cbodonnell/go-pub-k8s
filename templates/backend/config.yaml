@@ -4,6 +4,7 @@ metadata:
   name: go-pub-config
 data:
   server_name: {{ .Values.serverName }}
+  protocol: {{ .Values.protocol }}
   auth_endpoint: {{ .Values.auth.endpoint | quote }}
   client_endpoint: {{ .Values.client.endpoint | quote }}
   rsa_public_key: /etc/rsa/public.pem
