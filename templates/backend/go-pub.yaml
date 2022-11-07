@@ -115,9 +115,6 @@ spec:
   resources:
     requests:
       storage: 500Mi
-  selector:
-    matchLabels:
-      app: go-pub-uploads
 ---
 apiVersion: v1
 kind: Service
