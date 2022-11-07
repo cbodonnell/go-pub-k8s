@@ -29,10 +29,10 @@ kind: Secret
 metadata:
   name: go-pub-redis
 stringData:
-  {{- if .Values.useInternalRedis }}
-  host: go-pub-redis
+  {{- if .Values.redis.external.enabled }}
+  host: {{ .Values.redis.external.host }}
   {{- else }}
-  host: {{ .Values.redis.host }}
+  host: go-pub-redis
   {{- end }}
   password: {{ .Values.redis.password }}
 ---
