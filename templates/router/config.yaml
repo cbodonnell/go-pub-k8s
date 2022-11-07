@@ -9,14 +9,14 @@ data:
       # server_name {{ .Values.serverName }};
 
       location /auth/ {
-        proxy_pass http://go-pub-auth/auth/;
+        proxy_pass http://go-auth/auth/;
       }
 
       location /proxy {
-        proxy_pass http://go-pub-proxy;
+        proxy_pass http://pancors;
       }
 
       location / {
-        proxy_pass http://go-pub-backend;
+        proxy_pass http://go-pub;
       }
     }
