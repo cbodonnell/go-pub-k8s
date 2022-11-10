@@ -8,8 +8,8 @@ data:
       listen 80;
       # server_name {{ .Values.serverName }};
 
-      error_page 418 = @activity;
-      recursive_error_pages on;
+      # error_page 418 = @activity;
+      # recursive_error_pages on;
 
       location /auth/ {
         proxy_pass http://go-auth/auth/;
@@ -19,22 +19,21 @@ data:
         proxy_pass http://pancors/;
       }
 
-      location @activity {
-        proxy_pass http://go-pub/;
-      }
+      # location @activity {
+      #   proxy_pass http://go-pub/;
+      # }
 
       location / {
-
-        # if the accept header contains application/activity+json, proxy to the activity server
-        if ($http_accept ~* "application/activity\+json") {
-            return 418;
-        }
-        # if the accept header contains application/ld+json; profile="https://www.w3.org/ns/activitystreams", proxy to the activity server
-        if ($http_accept ~* 'application\/ld\+json; profile="https:\/\/www\.w3\.org\/ns\/activitystreams"') {
-            return 418;
-        }
+        # # if the accept header contains application/activity+json, proxy to the activity server
+        # if ($http_accept ~* "application/activity\+json") {
+        #     return 418;
+        # }
+        # # if the accept header contains application/ld+json; profile="https://www.w3.org/ns/activitystreams", proxy to the activity server
+        # if ($http_accept ~* 'application\/ld\+json; profile="https:\/\/www\.w3\.org\/ns\/activitystreams"') {
+        #     return 418;
+        # }
 
         # TODO: serve static files from nginx
-        proxy_pass http://go-pub;
+        proxy_pass http://go-pub/;
       }
     }
