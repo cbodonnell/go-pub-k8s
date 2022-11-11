@@ -37,6 +37,6 @@ data:
 
         client_max_body_size 32M;
         proxy_pass http://go-pub/;
-        proxt_set_header Host $host;
+        proxy_set_header Host $host;
       }
     }
