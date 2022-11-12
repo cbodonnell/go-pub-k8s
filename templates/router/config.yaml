@@ -20,8 +20,8 @@ data:
       location /proxy/ {
         # proxy_cache fwd_proxy_cache;
         proxy_pass http://pancors/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-Host $host;
+        # remove x-forwarded-host header
+        proxy_set_header X-Forwarded-Host "";
       }
 
       # location @activity {
