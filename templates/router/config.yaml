@@ -24,24 +24,25 @@ data:
         proxy_set_header X-Forwarded-Host "";
       }
 
-      # location @activity {
-      #   proxy_pass http://go-pub/;
-      # }
-
-      location / {
-        # # if the accept header contains application/activity+json, proxy to the activity server
-        # if ($http_accept ~* "application/activity\+json") {
-        #     return 418;
-        # }
-        # # if the accept header contains application/ld+json; profile="https://www.w3.org/ns/activitystreams", proxy to the activity server
-        # if ($http_accept ~* 'application\/ld\+json; profile="https:\/\/www\.w3\.org\/ns\/activitystreams"') {
-        #     return 418;
-        # }
-
-        # TODO: serve static files from nginx
-
+      location @activity {
         client_max_body_size 32M;
         proxy_pass http://go-pub/;
         proxy_set_header Host $host;
+      }
+
+      location / {
+        # if the accept header contains application/activity+json, proxy to the activity server
+        if ($http_accept ~* "application/activity\+json") {
+            return 418;
+        }
+        # if the accept header contains application/ld+json; profile="https://www.w3.org/ns/activitystreams", proxy to the activity server
+        if ($http_accept ~* 'application\/ld\+json; profile="https:\/\/www\.w3\.org\/ns\/activitystreams"') {
+            return 418;
+        }
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html;
+        expires -1; # Set it to different value depending on your standard requirements
       }
     }

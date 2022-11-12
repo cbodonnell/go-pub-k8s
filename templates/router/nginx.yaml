@@ -14,6 +14,13 @@ spec:
       labels:
         app: go-pub-nginx
     spec:
+      initContainers:
+      - name: go-pub-client-assets
+        image: cheebz/go-pub-client
+        command: ['sh', '-c', 'cp -r /usr/share/nginx/html/* /assets/']
+        volumeMounts:
+        - name: go-pub-client-assets-volume
+          mountPath: /assets/
       containers:
       - name: go-pub-nginx
         image: nginx:latest
@@ -22,7 +29,11 @@ spec:
         volumeMounts:
         - name: go-pub-nginx-config-volume
           mountPath: "/etc/nginx/conf.d/"
+        - name: go-pub-client-assets-volume
+          mountPath: "/usr/share/nginx/html/"
       volumes:
+        - name: go-pub-client-assets-volume
+          emptyDir: {}
         - name: go-pub-nginx-config-volume
           configMap:
             name: go-pub-nginx-config
