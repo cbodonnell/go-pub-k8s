@@ -17,7 +17,33 @@ spec:
       initContainers:
       - name: go-pub-client-assets
         image: cheebz/go-pub-client
-        command: ['sh', '-c', 'cp -r /usr/share/nginx/html/* /assets/']
+        command: ['sh', '-c', './entrypoint.sh .env.list /usr/share/nginx/html/env.js && cp -r /usr/share/nginx/html/* /assets/']
+        env:
+        - name: REACT_APP_AUTH_URL
+          valueFrom: 
+            configMapKeyRef:
+              name: go-pub-client-config
+              key: auth_url
+        - name: REACT_APP_AUTH_HCAPTCHA
+          valueFrom: 
+            configMapKeyRef:
+              name: go-pub-client-config
+              key: auth_hcaptcha
+        - name: REACT_APP_AUTH_REGISTER
+          valueFrom: 
+            configMapKeyRef:
+              name: go-pub-client-config
+              key: auth_register
+        - name: REACT_APP_ACTIVITY_URL
+          valueFrom: 
+            configMapKeyRef:
+              name: go-pub-client-config
+              key: activity_url
+        - name: REACT_APP_PROXY_URL
+          valueFrom: 
+            configMapKeyRef:
+              name: go-pub-client-config
+              key: proxy_url
         volumeMounts:
         - name: go-pub-client-assets-volume
           mountPath: /assets/
