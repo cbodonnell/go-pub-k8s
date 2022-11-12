@@ -17,6 +17,7 @@ data:
 
       location /proxy/ {
         proxy_pass http://pancors/;
+        proxy_set_header Host $host;
       }
 
       # location @activity {
