@@ -8,6 +8,8 @@ data:
       listen 80;
       server_name {{ .Values.serverName }};
 
+      proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=fwd_proxy_cache:10m max_size=10g inactive=60m use_temp_path=off;
+
       # error_page 418 = @activity;
       # recursive_error_pages on;
 
@@ -16,6 +18,7 @@ data:
       }
 
       location /proxy/ {
+        proxy_cache fwd_proxy_cache;
         proxy_pass http://pancors/;
         proxy_set_header Host $host;
       }
