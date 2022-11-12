@@ -4,11 +4,11 @@ metadata:
   name: go-pub-nginx-config
 data:
   default.conf: |
+    proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=fwd_proxy_cache:10m max_size=10g inactive=60m use_temp_path=off;
+
     server {
       listen 80;
       server_name {{ .Values.serverName }};
-
-      proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=fwd_proxy_cache:10m max_size=10g inactive=60m use_temp_path=off;
 
       # error_page 418 = @activity;
       # recursive_error_pages on;
