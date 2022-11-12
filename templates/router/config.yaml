@@ -10,8 +10,8 @@ data:
       listen 80;
       server_name {{ .Values.serverName }};
 
-      # error_page 418 = @activity;
-      # recursive_error_pages on;
+      error_page 418 = @activity;
+      recursive_error_pages on;
 
       location /auth/ {
         proxy_pass http://go-auth/auth/;
