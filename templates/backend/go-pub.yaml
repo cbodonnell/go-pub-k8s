@@ -19,10 +19,10 @@ spec:
       containers:
       - name: go-pub
         image: cheebz/go-pub
-        resources: # TODO: Determine eventually
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        # resources: # TODO: Determine eventually
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
         ports:
         - containerPort: 80
         env:
