@@ -96,7 +96,6 @@ spec:
           readOnly: true
           mountPath: "/etc/rsa"
         - name: go-pub-uploads-volume
-          readOnly: true
           mountPath: "/data/uploads"
       volumes:
         # - name: go-pub-logs
