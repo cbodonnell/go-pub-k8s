@@ -11,6 +11,8 @@ spec:
       app: go-pub-nginx
   template:
     metadata:
+      annotations:
+        configSha: {{ include (print $.Template.BasePath "/router/config.yaml") . | sha256sum | trunc 7 | quote }}
       labels:
         app: go-pub-nginx
     spec:
