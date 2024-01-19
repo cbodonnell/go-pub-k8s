@@ -22,6 +22,8 @@ data:
         proxy_pass http://pancors/;
         # remove x-forwarded-host header
         proxy_set_header X-Forwarded-Host "";
+        proxy_set_header X-Forwarded-Proto "";
+        proxy_set_header X-Forwarded-Scheme "";
       }
 
       # location @activity {
